@@ -1,12 +1,12 @@
 <Project>
 
   <PropertyGroup>
-    <Product>Keycloak Admin REST API client</Product>
+    <Product>MITA Notifications API Client</Product>
     <Title>$(Product)</Title>
     <Description>$(Product)</Description>
-    <Authors>Florian Schick</Authors>
-    <Company>Schick Software Entwicklung</Company>
-    <Copyright>© Florian Schick, 2022 all rights reserved</Copyright>
+    <Authors>Takudzwa Mawarire</Authors>
+    <Company>Avantech Software</Company>
+    <Copyright>©Avantech Software all rights reserved</Copyright>
     <Owners>$(Company)</Owners>
     <Summary>$(Description)</Summary>
     <Tags></Tags>
@@ -15,7 +15,7 @@
     <FileVersion>0.0.0.0</FileVersion>
     <AssemblyVersion>$(FileVersion)</AssemblyVersion>
 
-    <RepositoryUrl>https://github.com/fschick/Keycloak.RestApiClient.git</RepositoryUrl>
+    <RepositoryUrl>https://avantechsoftware.visualstudio.com/_git/MITANotificationApi</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

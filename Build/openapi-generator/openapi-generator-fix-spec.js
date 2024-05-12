@@ -9,6 +9,8 @@ async function replace() {
     let openApiDefinitionJson = await readFile(inputFile, 'utf8');
     const openApiDefinition = JSON.parse(openApiDefinitionJson);
 
+	openApiDefinition.components.securitySchemes["SMG-V1-HMAC-SHA256"].name = 'SmgV1HmacSha256';
+
     openApiDefinitionJson = JSON.stringify(openApiDefinition, null, '  ');
 	
 	// Replace generic parameter <T> with C# friendly {T}.

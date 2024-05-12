@@ -4,8 +4,8 @@
   "netCoreProjectFile": true,
   "targetFramework": "netstandard2.0",
   "packageName": "Mita.Notifications.Client",
-  "useDateTimeOffset": false,
-  "conditionalSerialization": true,
+  "useDateTimeOffset": true,
+  "conditionalSerialization": false,
   "nullableReferenceTypes": false,
   "optionalEmitDefaultValues": true
 }
