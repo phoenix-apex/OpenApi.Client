@@ -10,15 +10,15 @@ param (
 
 # Setup
 $workingDirectory = [System.IO.Path]::Combine("$PSScriptRoot", "..", "..")
-$localOpenApiJson = [System.IO.Path]::Combine($workingDirectory, "keycloak.openapi.json")
-$localOpenApiJsonFixed = [System.IO.Path]::Combine($workingDirectory, "keycloak.openapi.fixed.json")
-$localOpenApiJsonOperation = [System.IO.Path]::Combine($workingDirectory, "keycloak.openapi.operation.json")
+$localOpenApiJson = [System.IO.Path]::Combine($workingDirectory, "mita.notifications.openapi.json")
+$localOpenApiJsonFixed = [System.IO.Path]::Combine($workingDirectory, "mita.notifications.openapi.fixed.json")
+$localOpenApiJsonOperation = [System.IO.Path]::Combine($workingDirectory, "mita.notofications.openapi.operation.json")
 
 Push-Location $workingDirectory
 
 # Set input file
 if (!$openApiJson){
-    $openApiJson = "https://www.keycloak.org/docs-api/latest/rest-api/openapi.json"
+    $openApiJson = "https://notifications-api.gov.mt/swagger/v1/swagger.json"
 }
 
 # NPM install

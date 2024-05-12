@@ -314,5 +314,5 @@ __pycache__/
 /Mita.Notifications.Client/src/Mita.Notifications.Client.Test/Mita.Notifications.Client.Test.csproj
 /Mita.Notifications.Client/src/Mita.Notifications.Client.Test/Authentication/AuthenticationTests.data.json
 /Mita.Notifications.Client/api/openapi.yaml
-/keycloak.openapi.fixed.json
+/mita.openapi.fixed.json
 /keycloak.openapi.operation.json
