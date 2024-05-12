@@ -37,17 +37,17 @@ if ($openApiJson.StartsWith("http")) {
 
 # Generate client
 Push-Location Build/openapi-generator
-& node_modules/.bin/openapi-generator-cli generate -c openapi-generator.config.json -g csharp --template-dir templates --type-mappings date-span='TimeSpan' --global-property apiTests=false -o ../../FS.Keycloak.RestApiClient -i $localOpenApiJsonOperation
+& node_modules/.bin/openapi-generator-cli generate -c openapi-generator.config.json -g csharp --template-dir templates --type-mappings date-span='TimeSpan' --global-property apiTests=false -o ../../Mita.Notifications.Client -i $localOpenApiJsonOperation
 Pop-Location
 
 # Fix smaller issues from open API generator
-& node Build/openapi-generator/openapi-generator-fix-project.js FS.Keycloak.RestApiClient
+& node Build/openapi-generator/openapi-generator-fix-project.js Mita.Notifications.Client
 
 # Copy README.md
-Copy-Item README.md FS.Keycloak.RestApiClient/README.md
+Copy-Item README.md Mita.Notifications.Client/README.md
 
 # Build and publish NuGet package
-Build-Project -project FS.Keycloak.RestApiClient -version $version
-Publish-Nuget -project FS.Keycloak.RestApiClient/src/FS.Keycloak.RestApiClient -version $version -publshFolder $publshFolder
+Build-Project -project Mita.Notifications.Client -version $version
+Publish-Nuget -project Mita.Notifications.Client/src/Mita.Notifications.Client -version $version -publshFolder $publshFolder
 
 Pop-Location

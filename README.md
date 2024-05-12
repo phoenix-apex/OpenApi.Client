@@ -52,10 +52,10 @@ You can select authentication flow either by the username and password or by pro
 With authentication by username/password
 
 ```csharp
-using FS.Keycloak.RestApiClient.Api;
-using FS.Keycloak.RestApiClient.Authentication.ClientFactory;
-using FS.Keycloak.RestApiClient.Authentication.Flow;
-using FS.Keycloak.RestApiClient.ClientFactory;
+using Mita.Notifications.Client.Api;
+using Mita.Notifications.Client.Authentication.ClientFactory;
+using Mita.Notifications.Client.Authentication.Flow;
+using Mita.Notifications.Client.ClientFactory;
 
 var credentials = new PasswordGrantFlow
 {
@@ -75,10 +75,10 @@ Console.WriteLine($"Users: {users.Count}");
 With authentication by client-id/client-secret
 
 ```csharp
-using FS.Keycloak.RestApiClient.Api;
-using FS.Keycloak.RestApiClient.Authentication.ClientFactory;
-using FS.Keycloak.RestApiClient.Authentication.Flow;
-using FS.Keycloak.RestApiClient.ClientFactory;
+using Mita.Notifications.Client.Api;
+using Mita.Notifications.Client.Authentication.ClientFactory;
+using Mita.Notifications.Client.Authentication.Flow;
+using Mita.Notifications.Client.ClientFactory;
 
 var credentials = new ClientCredentialsFlow
 {

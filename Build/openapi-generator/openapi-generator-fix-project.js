@@ -11,7 +11,7 @@ const projectImports = `
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../../../FS.Keycloak.RestApiClient.png" Pack="true" PackagePath="Schick.Keycloak.RestApiClient.png"/>
+    <None Include="../../../Mita.Notifications.Client.png" Pack="true" PackagePath="Mita.Notifications.Client.png"/>
     <None Include="../../README.md" Pack="true" PackagePath="README.md" />
   </ItemGroup>
 `;
@@ -31,7 +31,7 @@ const fixes = [
 console.log('Replace version information ...');
 
 const directory = process.argv[2];
-replaceInFile('FS.Keycloak.RestApiClient/src/FS.Keycloak.RestApiClient/FS.Keycloak.RestApiClient.csproj', projectFixes)
+replaceInFile('Mita.Notifications.Client/src/Mita.Notifications.Client/Mita.Notifications.Client.csproj', projectFixes)
 	.then(() => {
 		console.log('Replace in directory ', directory);
 		return replaceInDirectory(directory, fixes);
