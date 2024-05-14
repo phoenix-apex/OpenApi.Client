@@ -23,13 +23,6 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
-
-  
-
-  <ItemGroup>
-    <EditorConfigFiles Include="Api\Interfaces\.editorconfig" />
-  </ItemGroup>
-
   
   
 </Project>

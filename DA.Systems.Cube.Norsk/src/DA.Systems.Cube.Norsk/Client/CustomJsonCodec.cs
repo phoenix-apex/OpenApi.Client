@@ -47,7 +47,7 @@ namespace DA.Systems.Cube.Norsk.Client
         /// <returns>A JSON string.</returns>
         public string Serialize(object obj)
         {
-            if (obj != null && obj is DA.Systems.Cube.Norsk.Model.AbstractOpenAPISchema)
+            if (obj is not null && obj is DA.Systems.Cube.Norsk.Model.AbstractOpenAPISchema)
             {
                 // the object to be serialized is an oneOf/anyOf schema
                 return ((DA.Systems.Cube.Norsk.Model.AbstractOpenAPISchema)obj).ToJson();

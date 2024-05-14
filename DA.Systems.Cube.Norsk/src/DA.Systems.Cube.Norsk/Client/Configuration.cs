@@ -113,8 +113,8 @@ namespace DA.Systems.Cube.Norsk.Client
         public Configuration()
         {
             Proxy = null;
-            UserAgent = WebUtility.UrlEncode("OpenAPI-Generator/1.0.0/csharp");
-            BasePath = "http://localhost";
+            UserAgent = WebUtility.UrlEncode("DA.Systems.Cube.Norsk/1.0.0/csharp");
+            BasePath = "https://dev-api.norsk-global.com";
             DefaultHeaders = new ConcurrentDictionary<string, string>();
             ApiKey = new ConcurrentDictionary<string, string>();
             ApiKeyPrefix = new ConcurrentDictionary<string, string>();

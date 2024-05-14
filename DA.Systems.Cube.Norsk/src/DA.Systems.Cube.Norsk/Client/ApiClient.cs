@@ -184,17 +184,6 @@ namespace DA.Systems.Cube.Norsk.Client
             builder.AddQueryParameters(options.QueryParameters);
 
             HttpRequestMessage request = new HttpRequestMessage(method, builder.GetFullUri());
-            
-            if (!string.IsNullOrWhiteSpace(configuration.AccessKeyId) && !string.IsNullOrWhiteSpace(configuration.SecretAccessKey))
-            {
-                var requestDateTime = DateTimeOffset.UtcNow;
-                var rawJson = JsonConvert.SerializeObject(options.Data);
-                var authHash = ComputeAuthHash(method, rawJson, options.HeaderParameters["Content-Type"].FirstOrDefault() ?? "application/jaon", path, requestDateTime, configuration.SecretAccessKey);
-
-                request.Headers.TryAddWithoutValidation("Authorization", $"{configuration.AccessKeyId}:{authHash}");
-                request.Headers.TryAddWithoutValidation("X-Date", requestDateTime.ToUniversalTime().ToString("R"));
-                request.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate, br, zstd");
-            }
 
             if (configuration.UserAgent != null)
             {
@@ -253,12 +242,22 @@ namespace DA.Systems.Cube.Norsk.Client
                     else
                     {
                         var serializer = new CustomJsonCodec(SerializerSettings, configuration);
-                        request.Content = new StringContent(serializer.Serialize(options.Data), new UTF8Encoding(),
-                            "application/json");
+                        var content = serializer.Serialize(options.Data);
+                        request.Content = new StringContent(content, new UTF8Encoding(), "application/json");
                     }
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(configuration.AccessKeyId) && !string.IsNullOrWhiteSpace(configuration.SecretAccessKey))
+            {
+                var requestDateTime = DateTimeOffset.Now;
+                var serializer = new CustomJsonCodec(SerializerSettings, configuration);
+                var content = options.Data is not null ? serializer.Serialize(options.Data) : string.Empty;
+                var authHash = ComputeAuthHash(method, content, contentType ?? string.Empty, path, requestDateTime, configuration.SecretAccessKey);
+                request.Headers.TryAddWithoutValidation("Authorization", $"{configuration.AccessKeyId}:{authHash}");
+                request.Headers.TryAddWithoutValidation("X-Date", requestDateTime.ToUniversalTime().ToString("R"));
+                request.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate, br, zstd");
+            }
 
 
             // TODO provide an alternative that allows cookies per request instead of per API client
