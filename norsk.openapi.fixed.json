@@ -1,0 +1,1830 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Norsk API",
+    "description": "",
+    "contact": {
+      "name": "Norsk Helpdesk",
+      "url": "https://norsk.global",
+      "email": "helpdesk@norsk-global.com"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/bulk/shipment/dimensions": {
+      "get": {
+        "tags": [
+          "BulkShipment"
+        ],
+        "summary": "Retrieve captured weight/dimensions for multiple shipments",
+        "operationId": "BulkShipment_Dimensions_GET",
+        "parameters": [
+          {
+            "name": "StartDateTime",
+            "in": "query",
+            "description": "Limit the search to a range start from this date",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "EndDateTime",
+            "in": "query",
+            "description": "Limit the search to a range end at this date",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShipmentDimensionsResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShipmentDimensionsResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShipmentDimensionsResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quote": {
+      "post": {
+        "tags": [
+          "Quote"
+        ],
+        "summary": "Get information about possible services that can be booked using the provided information.\r\nReturned Quotes will be applicable to the data provided.",
+        "operationId": "Quote_Quotes_POST",
+        "requestBody": {
+          "description": "Data to be used to get valid services that are bookable.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shipment/{barcode}": {
+      "get": {
+        "tags": [
+          "Shipment"
+        ],
+        "summary": "Get an object with all corresponding data for \"ExternalApi.Models.Shipment\".",
+        "operationId": "Shipment_Get_GET",
+        "parameters": [
+          {
+            "name": "barcode",
+            "in": "path",
+            "description": "String containing a reference for the searched shipment",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns \"ExternalApi.Models.Shipment\" with related data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shipment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returns any validations errors for the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrors"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returns an object containing an error reason and reference. Reference can be provided to helpdesk for assistance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shipment/{barcode}/dimensions": {
+      "get": {
+        "tags": [
+          "Shipment"
+        ],
+        "summary": "Retrieve captured weight/dimensions for a shipment items",
+        "description": "May return not found if the dimensions haven't yet been captured",
+        "operationId": "Shipment_Dimensions_GET",
+        "parameters": [
+          {
+            "name": "barcode",
+            "in": "path",
+            "description": "String containing a reference for the searched shipment",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns \"ExternalApi.Models.Dims.ShipmentDimensionsResponse\" with stored dimensions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentDimensionsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indicates that a shipment could not be found for the barcode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returns an object containing an error reason and reference. Reference can be provided to helpdesk for assistance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shipment": {
+      "post": {
+        "tags": [
+          "Shipment"
+        ],
+        "summary": "Book a shipment",
+        "operationId": "Shipment_Post_POST",
+        "requestBody": {
+          "description": "A model that represents a shipment booking request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShipmentBookingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns information about the newly booked \"ExternalApi.Models.Booking.ShipmentBookingResponse\"",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentBookingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the request has invalid or missing fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrors"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returns an object containing an error reason and reference. Reference can be provided to helpdesk for assistance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shipment/{barcode}/label": {
+      "get": {
+        "tags": [
+          "Shipment"
+        ],
+        "operationId": "Shipment_Label_GET",
+        "parameters": [
+          {
+            "name": "barcode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/LabelFormat"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/LabelSize"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "text/vnd.eltron-epl": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrors"
+                }
+              },
+              "text/vnd.eltron-epl": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrors"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrors"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              },
+              "text/vnd.eltron-epl": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/package/{barcode}/scanimage": {
+      "get": {
+        "tags": [
+          "ShipmentItem"
+        ],
+        "summary": "",
+        "operationId": "ShipmentItem_Image_GET",
+        "parameters": [
+          {
+            "name": "barcode",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/test": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "summary": "Simply returns true if the user is authenticated",
+        "operationId": "Test_Get_GET",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Address": {
+        "required": [
+          "Address1",
+          "City",
+          "ContactName",
+          "CountryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "ContactName": {
+            "maxLength": 35,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Company": {
+            "maxLength": 35,
+            "type": "string",
+            "nullable": true
+          },
+          "Address1": {
+            "maxLength": 45,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Address2": {
+            "maxLength": 45,
+            "type": "string",
+            "nullable": true
+          },
+          "Address3": {
+            "maxLength": 45,
+            "type": "string",
+            "nullable": true
+          },
+          "City": {
+            "maxLength": 35,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Division": {
+            "maxLength": 35,
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "maxLength": 50,
+            "type": "string",
+            "nullable": true
+          },
+          "DivisionCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "PhoneNumber": {
+            "maxLength": 20,
+            "type": "string",
+            "nullable": true
+          },
+          "Fax": {
+            "type": "string",
+            "nullable": true
+          },
+          "Zipcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "MobileNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "CountryCode": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Country specifed as a two letter ISO code"
+          },
+          "VAT": {
+            "type": "string",
+            "description": "Optional",
+            "nullable": true
+          },
+          "EORI": {
+            "type": "string",
+            "description": "Optional",
+            "nullable": true
+          },
+          "TaxId": {
+            "type": "string",
+            "description": "Optional",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CollectionAddress": {
+        "required": [
+          "Address1",
+          "City",
+          "CloseTime",
+          "ContactName",
+          "CountryCode",
+          "PackageLocation"
+        ],
+        "type": "object",
+        "properties": {
+          "ContactName": {
+            "maxLength": 35,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Company": {
+            "maxLength": 35,
+            "type": "string",
+            "nullable": true
+          },
+          "Address1": {
+            "maxLength": 45,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Address2": {
+            "maxLength": 45,
+            "type": "string",
+            "nullable": true
+          },
+          "Address3": {
+            "maxLength": 45,
+            "type": "string",
+            "nullable": true
+          },
+          "City": {
+            "maxLength": 35,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Division": {
+            "maxLength": 35,
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "maxLength": 50,
+            "type": "string",
+            "nullable": true
+          },
+          "DivisionCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "PhoneNumber": {
+            "maxLength": 20,
+            "type": "string",
+            "nullable": true
+          },
+          "Fax": {
+            "type": "string",
+            "nullable": true
+          },
+          "Zipcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "MobileNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "CountryCode": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Country specifed as a two letter ISO code"
+          },
+          "PackageLocation": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "CloseTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "PickupType": {
+            "$ref": "#/components/schemas/PickupType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Dangerous": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "$ref": "#/components/schemas/DangerousGoods"
+          },
+          "Reference": {
+            "type": "string",
+            "description": "Additional description of the dangerous good, where applicable will show on label.",
+            "nullable": true
+          },
+          "Weight": {
+            "type": "number",
+            "description": "Net Weight of the provided DangerousGood, where applicable carrier will be informed.",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DangerousGoods": {
+        "enum": [
+          "DI",
+          "BS",
+          "BSDI",
+          "ID8000",
+          "BCB",
+          "FULL",
+          "LIBP1",
+          "LIBP2",
+          "LMBP1",
+          "LMBP2",
+          "LMBP1969",
+          "LMBP1970",
+          "DGLB"
+        ],
+        "type": "string"
+      },
+      "Declarations": {
+        "type": "object",
+        "properties": {
+          "PreferentialOrigin": {
+            "type": "string",
+            "nullable": true
+          },
+          "TransportationCost": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "FreightCost": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "Insurance": {
+            "$ref": "#/components/schemas/Money"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Dimensions": {
+        "type": "object",
+        "properties": {
+          "NorskBarcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "Depth": {
+            "type": "number",
+            "description": "The depth/length specified in CM",
+            "format": "double"
+          },
+          "Height": {
+            "type": "number",
+            "description": "The height specified in CM",
+            "format": "double"
+          },
+          "Width": {
+            "type": "number",
+            "description": "The width specified in CM",
+            "format": "double"
+          },
+          "Weight": {
+            "type": "number",
+            "description": "The weight specified in KG",
+            "format": "double"
+          },
+          "VolumeWeight": {
+            "type": "number",
+            "description": "The weight specified in KG",
+            "format": "double"
+          },
+          "ImageUrl": {
+            "type": "string",
+            "description": "URL to the captured image of the Shipment Item",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Dutiable": {
+        "type": "object",
+        "properties": {
+          "Value": {
+            "type": "number",
+            "description": "The indicated value of the dutiable shipment.",
+            "format": "double"
+          },
+          "Currency": {
+            "type": "string",
+            "description": "The currency of the dutiable shipment's value.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a dutiable shipment item. This class details the indicated value and the currency of the dutiable shipment."
+      },
+      "Enhancement": {
+        "required": [
+          "Code"
+        ],
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "Message": {
+            "type": "string",
+            "nullable": true
+          },
+          "Reference": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExportCustoms": {
+        "required": [
+          "InvoiceNumber",
+          "TermsOfPayment",
+          "TermsOfTrade"
+        ],
+        "type": "object",
+        "properties": {
+          "InvoiceNumber": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "PayeeOfGST": {
+            "maxLength": 35,
+            "minLength": 1,
+            "type": "string",
+            "nullable": true
+          },
+          "InvoiceType": {
+            "$ref": "#/components/schemas/InvoiceType"
+          },
+          "TermsOfPayment": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "CurrencyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "TypeOfExport": {
+            "$ref": "#/components/schemas/TypeOfExport"
+          },
+          "TermsOfTrade": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "InvoiceConsignee": {
+            "maxLength": 35,
+            "minLength": 1,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Invoice Information"
+      },
+      "From": {
+        "type": "object",
+        "properties": {
+          "Zipcode": {
+            "type": "string",
+            "description": "The ZIP code of the collection location.",
+            "nullable": true
+          },
+          "Town": {
+            "type": "string",
+            "description": "The town of the collection location.",
+            "nullable": true
+          },
+          "CountryCode": {
+            "type": "string",
+            "description": "The country code of the collection location.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents the collection location for a shipment. This class is used to denote the precise place from \r\nwhere a shipment will be picked up, providing crucial details such as ZIP code, town, and country."
+      },
+      "InvoiceType": {
+        "enum": [
+          "Proforma",
+          "Commercial"
+        ],
+        "type": "string"
+      },
+      "LabelFormat": {
+        "enum": [
+          "Pdf",
+          "Epl",
+          "Png",
+          "Zpl"
+        ],
+        "type": "string"
+      },
+      "LabelSize": {
+        "enum": [
+          "A4",
+          "FourBySix",
+          "FourByEight"
+        ],
+        "type": "string"
+      },
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "Hour": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "ClockHourOfHalfDay": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "Minute": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "Second": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "Millisecond": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "TickOfSecond": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "TickOfDay": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "NanosecondOfSecond": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "NanosecondOfDay": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Money": {
+        "type": "object",
+        "properties": {
+          "Value": {
+            "type": "number",
+            "format": "double"
+          },
+          "Currency": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NarrativeVm": {
+        "type": "object",
+        "properties": {
+          "Location": {
+            "type": "string",
+            "description": "Where the event/status change took place.\r\nMay be blank.",
+            "nullable": true
+          },
+          "Action": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "Message": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "StatusCode": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "RecordedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NotFoundResult": {
+        "type": "object",
+        "properties": {
+          "StatusCode": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Picking": {
+        "type": "object",
+        "properties": {
+          "Instructions": {
+            "maxLength": 100,
+            "type": "string",
+            "description": "Instructions to be added to picking label",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PickupType": {
+        "enum": [
+          "Pickup"
+        ],
+        "type": "string"
+      },
+      "Piece": {
+        "required": [
+          "Depth",
+          "Height",
+          "NumberOfPieces",
+          "Weight",
+          "Width"
+        ],
+        "type": "object",
+        "properties": {
+          "Depth": {
+            "type": "number",
+            "description": "The depth/length specified in CM",
+            "format": "double"
+          },
+          "Height": {
+            "type": "number",
+            "description": "The height specified in CM",
+            "format": "double"
+          },
+          "Width": {
+            "type": "number",
+            "description": "The width specified in CM",
+            "format": "double"
+          },
+          "Weight": {
+            "maximum": 1000,
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "number",
+            "description": "The weight specified in KG",
+            "format": "double"
+          },
+          "NumberOfPieces": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "description": "The number of packages with the same dimensions",
+            "format": "int32"
+          },
+          "Products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            },
+            "description": "Product detail list in a Piece",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Product": {
+        "required": [
+          "CountryOfManufacture",
+          "ProductDescription"
+        ],
+        "type": "object",
+        "properties": {
+          "ProductDescription": {
+            "maxLength": 150,
+            "minLength": 2,
+            "type": "string"
+          },
+          "CountryOfManufacture": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Country of manufacture specifed as a two letter ISO code"
+          },
+          "HSCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "ProductUnitValue": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "number",
+            "format": "double"
+          },
+          "Currency": {
+            "type": "string",
+            "description": "If left unspecified then GBP will be used.",
+            "nullable": true
+          },
+          "ProductUnitWeight": {
+            "maximum": 1000,
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "number",
+            "description": "Product weight specified in KG",
+            "format": "double"
+          },
+          "ProductQuantity": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProofOfDelivery": {
+        "type": "object",
+        "properties": {
+          "SignedOn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "SignedBy": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Quote": {
+        "type": "object",
+        "properties": {
+          "ServiceName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ServiceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "TransitTime": {
+            "type": "string",
+            "nullable": true
+          },
+          "ChargeableWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "BaseCost": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "FuelCost": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "TotalCost": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "Costs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteCost"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "QuoteCost": {
+        "type": "object",
+        "properties": {
+          "Reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "BaseCost": {
+            "type": "number",
+            "format": "double"
+          },
+          "FuelCost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "TotalCost": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "QuoteRequestModel": {
+        "required": [
+          "CountryCode",
+          "Pieces",
+          "ShippingDate"
+        ],
+        "type": "object",
+        "properties": {
+          "ShippingDate": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The expected shipping date. More accurate prices are provided if the date is closer to the actual shipping date.",
+            "format": "date-time"
+          },
+          "Zipcode": {
+            "type": "string",
+            "description": "The ZIP code of the destination, if applicable.",
+            "nullable": true
+          },
+          "Town": {
+            "type": "string",
+            "description": "The town of the destination.",
+            "nullable": true
+          },
+          "CountryCode": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string",
+            "description": "The country code of the destination."
+          },
+          "Collection": {
+            "$ref": "#/components/schemas/From"
+          },
+          "Dutiable": {
+            "$ref": "#/components/schemas/Dutiable"
+          },
+          "AdditionalServiceOptions": {
+            "$ref": "#/components/schemas/ServiceOptions"
+          },
+          "Pieces": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteRequestPiece"
+            },
+            "description": "A list describing all the pieces in the shipment."
+          },
+          "Specials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteSpecials"
+            },
+            "description": "A list of additional charges to apply to the quote, e.g., for Delivery Duty Paid (DDP).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a model for a quote request in the shipment process. This model includes detailed information \r\nabout the shipping date, destination, collection source, value of the shipment, its pieces, and any applicable extra charges."
+      },
+      "QuoteRequestPiece": {
+        "required": [
+          "NumberOfPieces",
+          "Weight"
+        ],
+        "type": "object",
+        "properties": {
+          "Length": {
+            "type": "number",
+            "description": "The length dimension of the shipment piece.",
+            "format": "double"
+          },
+          "Width": {
+            "type": "number",
+            "description": "The width dimension of the shipment piece.",
+            "format": "double"
+          },
+          "Height": {
+            "type": "number",
+            "description": "The height dimension of the shipment piece.",
+            "format": "double"
+          },
+          "Weight": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "number",
+            "description": "The weight of the shipment piece.",
+            "format": "double"
+          },
+          "NumberOfPieces": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "description": "The quantity of pieces.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a piece in the shipment. This class provides specific details about a piece's dimensions (length, width, height), weight, and the quantity of such pieces in a shipment."
+      },
+      "QuoteResponseModel": {
+        "type": "object",
+        "properties": {
+          "QuotesValidFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "TotalQuotes": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "Currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "Quotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Quote"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "QuoteSpecials": {
+        "enum": [
+          "Pallet",
+          "Ddp",
+          "NonStackablePallet"
+        ],
+        "type": "string"
+      },
+      "RequestField": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Requester": {
+        "required": [
+          "Name",
+          "PhoneNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string"
+          },
+          "PhoneNumber": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Service": {
+        "required": [
+          "Code"
+        ],
+        "type": "object",
+        "properties": {
+          "Code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "Enhancements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhancement"
+            },
+            "nullable": true
+          },
+          "Supplier": {
+            "type": "string",
+            "description": "Optional preferred supplier code",
+            "nullable": true
+          },
+          "Route": {
+            "type": "string",
+            "description": "Optional routing code",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ServiceOptions": {
+        "type": "object",
+        "properties": {
+          "Insurance": {
+            "$ref": "#/components/schemas/Money"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Shipment": {
+        "type": "object",
+        "properties": {
+          "NorskBarcode": {
+            "type": "string",
+            "description": "Barcode/identifier allocated for the shipment\r\nby Norsk for tracking of the shipment.\r\nMay not be displayed on the label.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "Barcode": {
+            "type": "string",
+            "description": "the barcode shown on the shipment label.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "Hawb": {
+            "type": "string",
+            "description": "The Hawb (House Airway Bill) is your own unique reference number for the shipment, for example it could be the order reference.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "Status": {
+            "$ref": "#/components/schemas/NarrativeVm"
+          },
+          "Narrative": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NarrativeVm"
+            },
+            "description": "History of shipment statuses",
+            "nullable": true,
+            "readOnly": true
+          },
+          "ProofOfDelivery": {
+            "$ref": "#/components/schemas/ProofOfDelivery"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipmentArchiveDocument": {
+        "type": "object",
+        "properties": {
+          "Contents": {
+            "type": "string",
+            "description": "Base64 encoded copy of the document in PDF format",
+            "format": "byte",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipmentBookingItem": {
+        "type": "object",
+        "properties": {
+          "NorskBarcode": {
+            "type": "string",
+            "description": "Barcode/identifier allocated for the shipment item \r\nby Norsk may not be displayed on the label.",
+            "nullable": true
+          },
+          "Barcode": {
+            "type": "string",
+            "description": "The barcode shown on the label for the shipment item.",
+            "nullable": true
+          },
+          "Label": {
+            "type": "string",
+            "description": "Separate label for the shipment item.\r\nBase64 encoded in pdf format.",
+            "format": "byte",
+            "nullable": true
+          },
+          "ScanBarcode": {
+            "type": "string",
+            "description": "Barcode that is used when scanning an item.\r\nMay be different from numeric barcode displayed on the label.",
+            "nullable": true
+          },
+          "Weight": {
+            "type": "number",
+            "description": "Weight for the item specified by the booking\r\nMay be different from specified depending on dimensions",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipmentBookingRequest": {
+        "required": [
+          "Consignee",
+          "Hawb",
+          "Pieces",
+          "ReadyByDate",
+          "Service"
+        ],
+        "type": "object",
+        "properties": {
+          "Pieces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Piece"
+            }
+          },
+          "ReadyByDate": {
+            "minLength": 1,
+            "type": "string",
+            "description": "DateTime provided must included the Time and be in GMT format.",
+            "format": "date-time"
+          },
+          "Hawb": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The Hawb (House Airway Bill) is your own unique reference number for the shipment, for example it could be the order reference."
+          },
+          "Description": {
+            "maxLength": 90,
+            "type": "string",
+            "nullable": true
+          },
+          "Value": {
+            "type": "number",
+            "description": "Total value of the shipment (ex. VAT)",
+            "format": "double"
+          },
+          "Currency": {
+            "type": "string",
+            "description": "Currency of the shipment value as a three letter ISO code.\r\nIf left unspecified then GBP will be used.",
+            "nullable": true
+          },
+          "NonDox": {
+            "type": "boolean",
+            "description": "Uses to indicate of the shipment is documents or non-documents."
+          },
+          "DDP": {
+            "type": "boolean"
+          },
+          "Pallet": {
+            "type": "boolean"
+          },
+          "Invoice": {
+            "type": "string",
+            "description": "Optional - Base64 string can be provided to use PLT services with DHL for select countries.",
+            "nullable": true
+          },
+          "Requestor": {
+            "$ref": "#/components/schemas/Requester"
+          },
+          "Consignee": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "Collection": {
+            "$ref": "#/components/schemas/CollectionAddress"
+          },
+          "Shipper": {
+            "$ref": "#/components/schemas/ShipperAddress"
+          },
+          "Service": {
+            "$ref": "#/components/schemas/Service"
+          },
+          "Specials": {
+            "$ref": "#/components/schemas/Specials"
+          },
+          "Picking": {
+            "$ref": "#/components/schemas/Picking"
+          },
+          "LabelFormat": {
+            "$ref": "#/components/schemas/LabelFormat"
+          },
+          "Site": {
+            "$ref": "#/components/schemas/SiteDetails"
+          },
+          "ExportCustoms": {
+            "$ref": "#/components/schemas/ExportCustoms"
+          },
+          "CustomDeclarations": {
+            "$ref": "#/components/schemas/Declarations"
+          },
+          "LabelSize": {
+            "$ref": "#/components/schemas/LabelSize"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipmentBookingResponse": {
+        "type": "object",
+        "properties": {
+          "Barcode": {
+            "type": "string",
+            "description": "the barcode shown on the shipment label.",
+            "nullable": true
+          },
+          "Label": {
+            "type": "string",
+            "description": "Consolidated multi page pdf of the label and archive documents.\r\nBase64 encoded copy of the default shipment labels in 6x4 in PDF format",
+            "format": "byte",
+            "nullable": true
+          },
+          "NorskBarcode": {
+            "type": "string",
+            "description": "Barcode/identifier allocated for the shipment\r\nby Norsk for tracking of the shipment.\r\nMay not be displayed on the label.",
+            "nullable": true
+          },
+          "Items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShipmentBookingItem"
+            },
+            "description": "A collection containing details for each shipment item",
+            "nullable": true
+          },
+          "ArchiveDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShipmentArchiveDocument"
+            },
+            "description": "A collection of any non label documents to go with the shipment.",
+            "nullable": true
+          },
+          "CollectionReferenceNumber": {
+            "type": "string",
+            "description": "Supplier collection reference number for shipment with collection.\r\nWill be null for non collection shipment",
+            "nullable": true
+          },
+          "CollectionDateTime": {
+            "type": "string",
+            "description": "Supplier collection date with time number for shipment with collection.\r\nWill be null for non collection shipment",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipmentDimensionsResponse": {
+        "type": "object",
+        "properties": {
+          "Barcode": {
+            "type": "string",
+            "description": "the barcode shown on the shipment label.",
+            "nullable": true
+          },
+          "NorskBarcode": {
+            "type": "string",
+            "description": "Barcode/identifier allocated for the shipment\r\nby Norsk for tracking of the shipment.\r\nMay not be displayed on the label.",
+            "nullable": true
+          },
+          "Pieces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Dimensions"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShipperAddress": {
+        "required": [
+          "Address1",
+          "City",
+          "ContactName",
+          "CountryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "ContactName": {
+            "maxLength": 35,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Company": {
+            "maxLength": 35,
+            "type": "string",
+            "nullable": true
+          },
+          "Address1": {
+            "maxLength": 45,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Address2": {
+            "maxLength": 45,
+            "type": "string",
+            "nullable": true
+          },
+          "Address3": {
+            "maxLength": 45,
+            "type": "string",
+            "nullable": true
+          },
+          "City": {
+            "maxLength": 35,
+            "minLength": 2,
+            "type": "string"
+          },
+          "Division": {
+            "maxLength": 35,
+            "type": "string",
+            "nullable": true
+          },
+          "Email": {
+            "maxLength": 50,
+            "type": "string",
+            "nullable": true
+          },
+          "DivisionCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "PhoneNumber": {
+            "maxLength": 20,
+            "type": "string",
+            "nullable": true
+          },
+          "Fax": {
+            "type": "string",
+            "nullable": true
+          },
+          "Zipcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "MobileNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "CountryCode": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Country specifed as a two letter ISO code"
+          },
+          "VAT": {
+            "type": "string",
+            "description": "Optional",
+            "nullable": true
+          },
+          "EORI": {
+            "type": "string",
+            "description": "Optional",
+            "nullable": true
+          },
+          "TaxId": {
+            "type": "string",
+            "description": "Optional",
+            "nullable": true
+          },
+          "IOSS": {
+            "type": "string",
+            "description": "Government Issued IOSS Number, used for shipping to the EU with shipments under 150EUR.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SiteDetails": {
+        "type": "object",
+        "properties": {
+          "Location": {
+            "type": "string",
+            "description": "(optional) Location code such as airport code",
+            "nullable": true
+          },
+          "ContainerReference": {
+            "type": "string",
+            "description": "(optional) A reference to a container the shipment is intended to arrive in",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Location the shipment is being booked from"
+      },
+      "Specials": {
+        "type": "object",
+        "properties": {
+          "TimedDelivery": {
+            "$ref": "#/components/schemas/TimedDelivery"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimedDelivery": {
+        "enum": [
+          "None",
+          "Pre9",
+          "Pre12"
+        ],
+        "type": "string"
+      },
+      "TypeOfExport": {
+        "enum": [
+          "Permanent",
+          "Temporary",
+          "Gift",
+          "Repair",
+          "Sample",
+          "Return",
+          "InterCompanyData",
+          "Others"
+        ],
+        "type": "string"
+      },
+      "ValidationErrors": {
+        "type": "object",
+        "properties": {
+          "TargetSite": {},
+          "StackTrace": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "Message": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "Data": {
+            "type": "object",
+            "additionalProperties": {},
+            "nullable": true,
+            "readOnly": true
+          },
+          "InnerException": {},
+          "HelpLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "Source": {
+            "type": "string",
+            "nullable": true
+          },
+          "HResult": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ErrorCode": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "Fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestField"
+            },
+            "nullable": true
+          },
+          "PublicMessage": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Mita.Notifications.Client.Api;
-using Mita.Notifications.Client.Client;
-using Mita.Notifications.Client.Model;
+using DA.Systems.Cube.Norsk.Api;
+using DA.Systems.Cube.Norsk.Client;
+using DA.Systems.Cube.Norsk.Model;
 using Newtonsoft.Json;
 
 const string apiKey = "E0F52BF9B87F4FB4942A5CFFD3AAFD16";

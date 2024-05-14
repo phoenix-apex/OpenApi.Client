@@ -1,4 +1,4 @@
-# .NET / C# Mita.Notifications.Client
+# .NET / C# DA.Systems.Cube.Norsk
 This is a .NET / C# REST API client
 
 * For the [MITA Notifications REST API](https://notifications-api.gov.mt/swagger/index.html)
@@ -13,7 +13,7 @@ This is a .NET / C# REST API client
 ## Installation
 Install from NuGet package
 ```powershell
-Install-Package Mita.Notifications.Client
+Install-Package DA.Systems.Cube.Norsk
 ```
 
 ## Getting Started

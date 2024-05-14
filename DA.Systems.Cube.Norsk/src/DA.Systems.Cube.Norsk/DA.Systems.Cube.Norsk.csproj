@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../../Build/targets/net_standard.props" />
+  <Import Project="../../../Build/targets/version.props" />
+  <Import Project="../../../Build/targets/nuget.props" />
+  
+  <PropertyGroup>
+    <NoWarn>1701;1702;IDE0079;CS0472;CS0612</NoWarn>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../../DA.Systems.Cube.Norsk.png" Pack="true" PackagePath="DA.Systems.Cube.Norsk.png"/>
+    <None Include="../../README.md" Pack="true" PackagePath="README.md" />
+  </ItemGroup>
+
+
+  
+
+  <ItemGroup>
+    <PackageReference Include="JsonSubTypes" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Polly" Version="8.1.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+
+  
+
+  <ItemGroup>
+    <EditorConfigFiles Include="Api\Interfaces\.editorconfig" />
+  </ItemGroup>
+
+  
+  
+</Project>

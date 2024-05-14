@@ -1,0 +1,1922 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: helpdesk@norsk-global.com
+    name: Norsk Helpdesk
+    url: https://norsk.global
+  description: ""
+  title: Norsk API
+  version: v1
+servers:
+- url: /
+paths:
+  /api/bulk/shipment/dimensions:
+    get:
+      operationId: BulkShipment_Dimensions_GET
+      parameters:
+      - description: Limit the search to a range start from this date
+        explode: true
+        in: query
+        name: StartDateTime
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - description: Limit the search to a range end at this date
+        explode: true
+        in: query
+        name: EndDateTime
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ShipmentDimensionsResponse'
+                type: array
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ShipmentDimensionsResponse'
+                type: array
+            text/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ShipmentDimensionsResponse'
+                type: array
+          description: Success
+      summary: Retrieve captured weight/dimensions for multiple shipments
+      tags:
+      - BulkShipment
+      x-csharp-action: GetApiBulkShipmentDimensions
+  /api/quote:
+    post:
+      operationId: Quote_Quotes_POST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequestModel'
+        description: Data to be used to get valid services that are bookable.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponseModel'
+          description: Success
+      summary: "Get information about possible services that can be booked using the\
+        \ provided information.\r\nReturned Quotes will be applicable to the data\
+        \ provided."
+      tags:
+      - Quote
+      x-csharp-action: PostApiQuote
+  /api/shipment/{barcode}:
+    get:
+      operationId: Shipment_Get_GET
+      parameters:
+      - description: String containing a reference for the searched shipment
+        explode: false
+        in: path
+        name: barcode
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: Returns "ExternalApi.Models.Shipment" with related data.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrors'
+          description: Returns any validations errors for the request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Returns an object containing an error reason and reference.
+            Reference can be provided to helpdesk for assistance
+      summary: Get an object with all corresponding data for "ExternalApi.Models.Shipment".
+      tags:
+      - Shipment
+      x-csharp-action: GetApiShipmentByBarcode
+  /api/shipment/{barcode}/dimensions:
+    get:
+      description: May return not found if the dimensions haven't yet been captured
+      operationId: Shipment_Dimensions_GET
+      parameters:
+      - description: String containing a reference for the searched shipment
+        explode: false
+        in: path
+        name: barcode
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipmentDimensionsResponse'
+          description: Returns "ExternalApi.Models.Dims.ShipmentDimensionsResponse"
+            with stored dimensions.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResult'
+          description: Indicates that a shipment could not be found for the barcode.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Returns an object containing an error reason and reference.
+            Reference can be provided to helpdesk for assistance
+      summary: Retrieve captured weight/dimensions for a shipment items
+      tags:
+      - Shipment
+      x-csharp-action: GetApiShipmentDimensionsByBarcode
+  /api/shipment:
+    post:
+      operationId: Shipment_Post_POST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShipmentBookingRequest'
+        description: A model that represents a shipment booking request
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipmentBookingResponse'
+          description: Returns information about the newly booked "ExternalApi.Models.Booking.ShipmentBookingResponse"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrors'
+          description: If the request has invalid or missing fields
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Returns an object containing an error reason and reference.
+            Reference can be provided to helpdesk for assistance
+      summary: Book a shipment
+      tags:
+      - Shipment
+      x-csharp-action: PostApiShipment
+  /api/shipment/{barcode}/label:
+    get:
+      operationId: Shipment_Label_GET
+      parameters:
+      - explode: false
+        in: path
+        name: barcode
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: format
+        required: false
+        schema:
+          $ref: '#/components/schemas/LabelFormat'
+        style: form
+      - explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          $ref: '#/components/schemas/LabelSize'
+        style: form
+      responses:
+        "200":
+          content:
+            application/pdf:
+              schema:
+                format: byte
+                type: string
+            text/vnd.eltron-epl:
+              schema:
+                format: byte
+                type: string
+            application/json:
+              schema:
+                format: byte
+                type: string
+          description: Success
+        "400":
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ValidationErrors'
+            text/vnd.eltron-epl:
+              schema:
+                $ref: '#/components/schemas/ValidationErrors'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrors'
+          description: Bad Request
+        "500":
+          content:
+            application/pdf:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+            text/vnd.eltron-epl:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+          description: Server Error
+      tags:
+      - Shipment
+      x-csharp-action: GetApiShipmentLabelByBarcode
+  /api/package/{barcode}/scanimage:
+    get:
+      operationId: ShipmentItem_Image_GET
+      parameters:
+      - description: ""
+        explode: false
+        in: path
+        name: barcode
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                format: byte
+                type: string
+            application/json:
+              schema:
+                format: byte
+                type: string
+            text/json:
+              schema:
+                format: byte
+                type: string
+          description: Success
+      summary: ""
+      tags:
+      - ShipmentItem
+      x-csharp-action: GetApiPackageScanimageByBarcode
+  /api/test:
+    get:
+      operationId: Test_Get_GET
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+          description: Success
+      summary: Simply returns true if the user is authenticated
+      tags:
+      - Test
+      x-csharp-action: GetApiTest
+components:
+  schemas:
+    Address:
+      additionalProperties: false
+      example:
+        EORI: EORI
+        Company: Company
+        Email: Email
+        Address2: Address2
+        VAT: VAT
+        Address3: Address3
+        Address1: Address1
+        City: City
+        TaxId: TaxId
+        DivisionCode: DivisionCode
+        MobileNumber: MobileNumber
+        Zipcode: Zipcode
+        PhoneNumber: PhoneNumber
+        Division: Division
+        Fax: Fax
+        CountryCode: CountryCode
+        ContactName: ContactName
+      properties:
+        ContactName:
+          maxLength: 35
+          minLength: 2
+          type: string
+        Company:
+          maxLength: 35
+          nullable: true
+          type: string
+        Address1:
+          maxLength: 45
+          minLength: 2
+          type: string
+        Address2:
+          maxLength: 45
+          nullable: true
+          type: string
+        Address3:
+          maxLength: 45
+          nullable: true
+          type: string
+        City:
+          maxLength: 35
+          minLength: 2
+          type: string
+        Division:
+          maxLength: 35
+          nullable: true
+          type: string
+        Email:
+          maxLength: 50
+          nullable: true
+          type: string
+        DivisionCode:
+          nullable: true
+          type: string
+        PhoneNumber:
+          maxLength: 20
+          nullable: true
+          type: string
+        Fax:
+          nullable: true
+          type: string
+        Zipcode:
+          nullable: true
+          type: string
+        MobileNumber:
+          nullable: true
+          type: string
+        CountryCode:
+          description: Country specifed as a two letter ISO code
+          minLength: 1
+          type: string
+        VAT:
+          description: Optional
+          nullable: true
+          type: string
+        EORI:
+          description: Optional
+          nullable: true
+          type: string
+        TaxId:
+          description: Optional
+          nullable: true
+          type: string
+      required:
+      - Address1
+      - City
+      - ContactName
+      - CountryCode
+      type: object
+    CollectionAddress:
+      additionalProperties: false
+      example:
+        Company: Company
+        Email: Email
+        Address2: Address2
+        Address3: Address3
+        Address1: Address1
+        City: City
+        DivisionCode: DivisionCode
+        MobileNumber: MobileNumber
+        CloseTime:
+          Millisecond: 1
+          NanosecondOfSecond: 7
+          Minute: 7
+          Second: 1
+          Hour: 2
+          TickOfSecond: 1
+          NanosecondOfDay: 1
+          ClockHourOfHalfDay: 4
+          TickOfDay: 6
+        Zipcode: Zipcode
+        PhoneNumber: PhoneNumber
+        Division: Division
+        PickupType: null
+        Fax: Fax
+        CountryCode: CountryCode
+        ContactName: ContactName
+        PackageLocation: PackageLocation
+      properties:
+        ContactName:
+          maxLength: 35
+          minLength: 2
+          type: string
+        Company:
+          maxLength: 35
+          nullable: true
+          type: string
+        Address1:
+          maxLength: 45
+          minLength: 2
+          type: string
+        Address2:
+          maxLength: 45
+          nullable: true
+          type: string
+        Address3:
+          maxLength: 45
+          nullable: true
+          type: string
+        City:
+          maxLength: 35
+          minLength: 2
+          type: string
+        Division:
+          maxLength: 35
+          nullable: true
+          type: string
+        Email:
+          maxLength: 50
+          nullable: true
+          type: string
+        DivisionCode:
+          nullable: true
+          type: string
+        PhoneNumber:
+          maxLength: 20
+          nullable: true
+          type: string
+        Fax:
+          nullable: true
+          type: string
+        Zipcode:
+          nullable: true
+          type: string
+        MobileNumber:
+          nullable: true
+          type: string
+        CountryCode:
+          description: Country specifed as a two letter ISO code
+          minLength: 1
+          type: string
+        PackageLocation:
+          minLength: 1
+          type: string
+        CloseTime:
+          $ref: '#/components/schemas/LocalTime'
+        PickupType:
+          $ref: '#/components/schemas/PickupType'
+      required:
+      - Address1
+      - City
+      - CloseTime
+      - ContactName
+      - CountryCode
+      - PackageLocation
+      type: object
+    Dangerous:
+      additionalProperties: false
+      properties:
+        Type:
+          $ref: '#/components/schemas/DangerousGoods'
+        Reference:
+          description: "Additional description of the dangerous good, where applicable\
+            \ will show on label."
+          nullable: true
+          type: string
+        Weight:
+          description: "Net Weight of the provided DangerousGood, where applicable\
+            \ carrier will be informed."
+          format: double
+          nullable: true
+          type: number
+      type: object
+    DangerousGoods:
+      enum:
+      - DI
+      - BS
+      - BSDI
+      - ID8000
+      - BCB
+      - FULL
+      - LIBP1
+      - LIBP2
+      - LMBP1
+      - LMBP2
+      - LMBP1969
+      - LMBP1970
+      - DGLB
+      type: string
+    Declarations:
+      additionalProperties: false
+      example:
+        PreferentialOrigin: PreferentialOrigin
+        FreightCost:
+          Currency: Currency
+          Value: 6.027456183070403
+        Insurance:
+          Currency: Currency
+          Value: 6.027456183070403
+        TransportationCost:
+          Currency: Currency
+          Value: 6.027456183070403
+      properties:
+        PreferentialOrigin:
+          nullable: true
+          type: string
+        TransportationCost:
+          $ref: '#/components/schemas/Money'
+        FreightCost:
+          $ref: '#/components/schemas/Money'
+        Insurance:
+          $ref: '#/components/schemas/Money'
+      type: object
+    Dimensions:
+      additionalProperties: false
+      example:
+        NorskBarcode: NorskBarcode
+        VolumeWeight: 5.637376656633329
+        ImageUrl: ImageUrl
+        Height: 6.027456183070403
+        Width: 1.4658129805029452
+        Depth: 0.8008281904610115
+        Weight: 5.962133916683182
+      properties:
+        NorskBarcode:
+          nullable: true
+          type: string
+        Depth:
+          description: The depth/length specified in CM
+          format: double
+          type: number
+        Height:
+          description: The height specified in CM
+          format: double
+          type: number
+        Width:
+          description: The width specified in CM
+          format: double
+          type: number
+        Weight:
+          description: The weight specified in KG
+          format: double
+          type: number
+        VolumeWeight:
+          description: The weight specified in KG
+          format: double
+          type: number
+        ImageUrl:
+          description: URL to the captured image of the Shipment Item
+          nullable: true
+          readOnly: true
+          type: string
+      type: object
+    Dutiable:
+      additionalProperties: false
+      description: Represents a dutiable shipment item. This class details the indicated
+        value and the currency of the dutiable shipment.
+      example:
+        Currency: Currency
+        Value: 0.8008281904610115
+      properties:
+        Value:
+          description: The indicated value of the dutiable shipment.
+          format: double
+          type: number
+        Currency:
+          description: The currency of the dutiable shipment's value.
+          nullable: true
+          type: string
+      type: object
+    Enhancement:
+      additionalProperties: false
+      example:
+        Code: Code
+      properties:
+        Code:
+          type: string
+      required:
+      - Code
+      type: object
+    ErrorMessage:
+      additionalProperties: false
+      example:
+        Message: Message
+        Reference: Reference
+      properties:
+        Message:
+          nullable: true
+          type: string
+        Reference:
+          nullable: true
+          type: string
+      type: object
+    ExportCustoms:
+      additionalProperties: false
+      description: Invoice Information
+      example:
+        CurrencyCode: CurrencyCode
+        InvoiceConsignee: InvoiceConsignee
+        TermsOfPayment: TermsOfPayment
+        TermsOfTrade: TermsOfTrade
+        InvoiceNumber: InvoiceNumber
+        PayeeOfGST: PayeeOfGST
+        InvoiceType: null
+        TypeOfExport: null
+      properties:
+        InvoiceNumber:
+          minLength: 1
+          type: string
+        PayeeOfGST:
+          maxLength: 35
+          minLength: 1
+          nullable: true
+          type: string
+        InvoiceType:
+          $ref: '#/components/schemas/InvoiceType'
+        TermsOfPayment:
+          minLength: 1
+          type: string
+        CurrencyCode:
+          nullable: true
+          type: string
+        TypeOfExport:
+          $ref: '#/components/schemas/TypeOfExport'
+        TermsOfTrade:
+          minLength: 1
+          type: string
+        InvoiceConsignee:
+          maxLength: 35
+          minLength: 1
+          nullable: true
+          type: string
+      required:
+      - InvoiceNumber
+      - TermsOfPayment
+      - TermsOfTrade
+      type: object
+    From:
+      additionalProperties: false
+      description: "Represents the collection location for a shipment. This class\
+        \ is used to denote the precise place from \r\nwhere a shipment will be picked\
+        \ up, providing crucial details such as ZIP code, town, and country."
+      example:
+        Town: Town
+        Zipcode: Zipcode
+        CountryCode: CountryCode
+      properties:
+        Zipcode:
+          description: The ZIP code of the collection location.
+          nullable: true
+          type: string
+        Town:
+          description: The town of the collection location.
+          nullable: true
+          type: string
+        CountryCode:
+          description: The country code of the collection location.
+          nullable: true
+          type: string
+      type: object
+    InvoiceType:
+      enum:
+      - Proforma
+      - Commercial
+      type: string
+    LabelFormat:
+      enum:
+      - Pdf
+      - Epl
+      - Png
+      - Zpl
+      type: string
+    LabelSize:
+      enum:
+      - A4
+      - FourBySix
+      - FourByEight
+      type: string
+    LocalTime:
+      additionalProperties: false
+      example:
+        Millisecond: 1
+        NanosecondOfSecond: 7
+        Minute: 7
+        Second: 1
+        Hour: 2
+        TickOfSecond: 1
+        NanosecondOfDay: 1
+        ClockHourOfHalfDay: 4
+        TickOfDay: 6
+      properties:
+        Hour:
+          format: int32
+          readOnly: true
+          type: integer
+        ClockHourOfHalfDay:
+          format: int32
+          readOnly: true
+          type: integer
+        Minute:
+          format: int32
+          readOnly: true
+          type: integer
+        Second:
+          format: int32
+          readOnly: true
+          type: integer
+        Millisecond:
+          format: int32
+          readOnly: true
+          type: integer
+        TickOfSecond:
+          format: int32
+          readOnly: true
+          type: integer
+        TickOfDay:
+          format: int64
+          readOnly: true
+          type: integer
+        NanosecondOfSecond:
+          format: int32
+          readOnly: true
+          type: integer
+        NanosecondOfDay:
+          format: int64
+          readOnly: true
+          type: integer
+      type: object
+    Money:
+      additionalProperties: false
+      example:
+        Currency: Currency
+        Value: 6.027456183070403
+      properties:
+        Value:
+          format: double
+          type: number
+        Currency:
+          nullable: true
+          type: string
+      type: object
+    NarrativeVm:
+      additionalProperties: false
+      example:
+        Action: Action
+        Message: Message
+        RecordedOn: 2000-01-23T04:56:07.000+00:00
+        StatusCode: StatusCode
+        Location: Location
+      properties:
+        Location:
+          description: "Where the event/status change took place.\r\nMay be blank."
+          nullable: true
+          type: string
+        Action:
+          nullable: true
+          readOnly: true
+          type: string
+        Message:
+          nullable: true
+          readOnly: true
+          type: string
+        StatusCode:
+          nullable: true
+          readOnly: true
+          type: string
+        RecordedOn:
+          format: date-time
+          nullable: true
+          readOnly: true
+          type: string
+      type: object
+    NotFoundResult:
+      additionalProperties: false
+      example:
+        StatusCode: 0
+      properties:
+        StatusCode:
+          format: int32
+          readOnly: true
+          type: integer
+      type: object
+    Picking:
+      additionalProperties: false
+      example:
+        Instructions: Instructions
+      properties:
+        Instructions:
+          description: Instructions to be added to picking label
+          maxLength: 100
+          nullable: true
+          type: string
+      type: object
+    PickupType:
+      enum:
+      - Pickup
+      type: string
+    Piece:
+      additionalProperties: false
+      example:
+        Products:
+        - ProductQuantity: 0
+          HSCode: HSCode
+          Currency: Currency
+          ProductDescription: ProductDescription
+          CountryOfManufacture: CountryOfManufacture
+          ProductUnitValue: 0.23021358869347652
+          ProductUnitWeight: 706.140124150311
+        - ProductQuantity: 0
+          HSCode: HSCode
+          Currency: Currency
+          ProductDescription: ProductDescription
+          CountryOfManufacture: CountryOfManufacture
+          ProductUnitValue: 0.23021358869347652
+          ProductUnitWeight: 706.140124150311
+        Height: 6.027456183070403
+        Width: 1.4658129805029452
+        Depth: 0.8008281904610115
+        Weight: 596.2133916683182
+        NumberOfPieces: 0
+      properties:
+        Depth:
+          description: The depth/length specified in CM
+          format: double
+          type: number
+        Height:
+          description: The height specified in CM
+          format: double
+          type: number
+        Width:
+          description: The width specified in CM
+          format: double
+          type: number
+        Weight:
+          description: The weight specified in KG
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: 0
+          type: number
+        NumberOfPieces:
+          description: The number of packages with the same dimensions
+          exclusiveMinimum: true
+          format: int32
+          minimum: 0
+          type: integer
+        Products:
+          description: Product detail list in a Piece
+          items:
+            $ref: '#/components/schemas/Product'
+          nullable: true
+          type: array
+      required:
+      - Depth
+      - Height
+      - NumberOfPieces
+      - Weight
+      - Width
+      type: object
+    Product:
+      additionalProperties: false
+      example:
+        ProductQuantity: 0
+        HSCode: HSCode
+        Currency: Currency
+        ProductDescription: ProductDescription
+        CountryOfManufacture: CountryOfManufacture
+        ProductUnitValue: 0.23021358869347652
+        ProductUnitWeight: 706.140124150311
+      properties:
+        ProductDescription:
+          maxLength: 150
+          minLength: 2
+          type: string
+        CountryOfManufacture:
+          description: Country of manufacture specifed as a two letter ISO code
+          minLength: 1
+          type: string
+        HSCode:
+          nullable: true
+          type: string
+        ProductUnitValue:
+          exclusiveMinimum: true
+          format: double
+          minimum: 0
+          type: number
+        Currency:
+          description: If left unspecified then GBP will be used.
+          nullable: true
+          type: string
+        ProductUnitWeight:
+          description: Product weight specified in KG
+          exclusiveMinimum: true
+          format: double
+          maximum: 1000
+          minimum: 0
+          type: number
+        ProductQuantity:
+          exclusiveMinimum: true
+          format: int32
+          minimum: 0
+          type: integer
+      required:
+      - CountryOfManufacture
+      - ProductDescription
+      type: object
+    ProofOfDelivery:
+      additionalProperties: false
+      example:
+        SignedBy: SignedBy
+        SignedOn: 2000-01-23T04:56:07.000+00:00
+      properties:
+        SignedOn:
+          format: date-time
+          nullable: true
+          readOnly: true
+          type: string
+        SignedBy:
+          nullable: true
+          readOnly: true
+          type: string
+      type: object
+    Quote:
+      additionalProperties: false
+      example:
+        TotalCost: 5.637376656633329
+        ChargeableWeight: 6.027456183070403
+        TransitTime: TransitTime
+        Costs:
+        - TotalCost: 9.301444243932576
+          FuelCost: 7.061401241503109
+          Reference: Reference
+          BaseCost: 2.3021358869347655
+        - TotalCost: 9.301444243932576
+          FuelCost: 7.061401241503109
+          Reference: Reference
+          BaseCost: 2.3021358869347655
+        ServiceCode: ServiceCode
+        ServiceName: ServiceName
+        FuelCost: 5.962133916683182
+        BaseCost: 1.4658129805029452
+      properties:
+        ServiceName:
+          nullable: true
+          type: string
+        ServiceCode:
+          nullable: true
+          type: string
+        TransitTime:
+          nullable: true
+          type: string
+        ChargeableWeight:
+          format: double
+          type: number
+        BaseCost:
+          format: double
+          readOnly: true
+          type: number
+        FuelCost:
+          format: double
+          readOnly: true
+          type: number
+        TotalCost:
+          format: double
+          readOnly: true
+          type: number
+        Costs:
+          items:
+            $ref: '#/components/schemas/QuoteCost'
+          nullable: true
+          type: array
+      type: object
+    QuoteCost:
+      additionalProperties: false
+      example:
+        TotalCost: 9.301444243932576
+        FuelCost: 7.061401241503109
+        Reference: Reference
+        BaseCost: 2.3021358869347655
+      properties:
+        Reference:
+          nullable: true
+          type: string
+        BaseCost:
+          format: double
+          type: number
+        FuelCost:
+          format: double
+          nullable: true
+          type: number
+        TotalCost:
+          format: double
+          readOnly: true
+          type: number
+      type: object
+    QuoteRequestModel:
+      additionalProperties: false
+      description: "Represents a model for a quote request in the shipment process.\
+        \ This model includes detailed information \r\nabout the shipping date, destination,\
+        \ collection source, value of the shipment, its pieces, and any applicable\
+        \ extra charges."
+      example:
+        Dutiable:
+          Currency: Currency
+          Value: 0.8008281904610115
+        Specials:
+        - null
+        - null
+        Town: Town
+        AdditionalServiceOptions:
+          Insurance:
+            Currency: Currency
+            Value: 6.027456183070403
+        ShippingDate: 2000-01-23T04:56:07.000+00:00
+        Zipcode: Zipcode
+        Collection:
+          Town: Town
+          Zipcode: Zipcode
+          CountryCode: CountryCode
+        CountryCode: CountryCode
+        Pieces:
+        - Length: 1.4658129805029452
+          Height: 5.637376656633329
+          Width: 5.962133916683182
+          Weight: 0.23021358869347652
+          NumberOfPieces: 0
+        - Length: 1.4658129805029452
+          Height: 5.637376656633329
+          Width: 5.962133916683182
+          Weight: 0.23021358869347652
+          NumberOfPieces: 0
+      properties:
+        ShippingDate:
+          description: The expected shipping date. More accurate prices are provided
+            if the date is closer to the actual shipping date.
+          format: date-time
+          minLength: 1
+          type: string
+        Zipcode:
+          description: "The ZIP code of the destination, if applicable."
+          nullable: true
+          type: string
+        Town:
+          description: The town of the destination.
+          nullable: true
+          type: string
+        CountryCode:
+          description: The country code of the destination.
+          maxLength: 2
+          minLength: 2
+          type: string
+        Collection:
+          $ref: '#/components/schemas/From'
+        Dutiable:
+          $ref: '#/components/schemas/Dutiable'
+        AdditionalServiceOptions:
+          $ref: '#/components/schemas/ServiceOptions'
+        Pieces:
+          description: A list describing all the pieces in the shipment.
+          items:
+            $ref: '#/components/schemas/QuoteRequestPiece'
+          minItems: 1
+          type: array
+        Specials:
+          description: "A list of additional charges to apply to the quote, e.g.,\
+            \ for Delivery Duty Paid (DDP)."
+          items:
+            $ref: '#/components/schemas/QuoteSpecials'
+          nullable: true
+          type: array
+      required:
+      - CountryCode
+      - Pieces
+      - ShippingDate
+      type: object
+    QuoteRequestPiece:
+      additionalProperties: false
+      description: "Represents a piece in the shipment. This class provides specific\
+        \ details about a piece's dimensions (length, width, height), weight, and\
+        \ the quantity of such pieces in a shipment."
+      example:
+        Length: 1.4658129805029452
+        Height: 5.637376656633329
+        Width: 5.962133916683182
+        Weight: 0.23021358869347652
+        NumberOfPieces: 0
+      properties:
+        Length:
+          description: The length dimension of the shipment piece.
+          format: double
+          type: number
+        Width:
+          description: The width dimension of the shipment piece.
+          format: double
+          type: number
+        Height:
+          description: The height dimension of the shipment piece.
+          format: double
+          type: number
+        Weight:
+          description: The weight of the shipment piece.
+          exclusiveMinimum: true
+          format: double
+          minimum: 0
+          type: number
+        NumberOfPieces:
+          description: The quantity of pieces.
+          exclusiveMinimum: true
+          format: int32
+          minimum: 0
+          type: integer
+      required:
+      - NumberOfPieces
+      - Weight
+      type: object
+    QuoteResponseModel:
+      additionalProperties: false
+      example:
+        Currency: Currency
+        Quotes:
+        - TotalCost: 5.637376656633329
+          ChargeableWeight: 6.027456183070403
+          TransitTime: TransitTime
+          Costs:
+          - TotalCost: 9.301444243932576
+            FuelCost: 7.061401241503109
+            Reference: Reference
+            BaseCost: 2.3021358869347655
+          - TotalCost: 9.301444243932576
+            FuelCost: 7.061401241503109
+            Reference: Reference
+            BaseCost: 2.3021358869347655
+          ServiceCode: ServiceCode
+          ServiceName: ServiceName
+          FuelCost: 5.962133916683182
+          BaseCost: 1.4658129805029452
+        - TotalCost: 5.637376656633329
+          ChargeableWeight: 6.027456183070403
+          TransitTime: TransitTime
+          Costs:
+          - TotalCost: 9.301444243932576
+            FuelCost: 7.061401241503109
+            Reference: Reference
+            BaseCost: 2.3021358869347655
+          - TotalCost: 9.301444243932576
+            FuelCost: 7.061401241503109
+            Reference: Reference
+            BaseCost: 2.3021358869347655
+          ServiceCode: ServiceCode
+          ServiceName: ServiceName
+          FuelCost: 5.962133916683182
+          BaseCost: 1.4658129805029452
+        TotalQuotes: 0
+        QuotesValidFrom: 2000-01-23T04:56:07.000+00:00
+      properties:
+        QuotesValidFrom:
+          format: date-time
+          type: string
+        TotalQuotes:
+          format: int32
+          readOnly: true
+          type: integer
+        Currency:
+          nullable: true
+          type: string
+        Quotes:
+          items:
+            $ref: '#/components/schemas/Quote'
+          nullable: true
+          type: array
+      type: object
+    QuoteSpecials:
+      enum:
+      - Pallet
+      - Ddp
+      - NonStackablePallet
+      type: string
+    RequestField:
+      additionalProperties: false
+      example:
+        Errors:
+        - Errors
+        - Errors
+        Name: Name
+      properties:
+        Name:
+          nullable: true
+          type: string
+        Errors:
+          items:
+            type: string
+          nullable: true
+          type: array
+      type: object
+    Requester:
+      additionalProperties: false
+      example:
+        PhoneNumber: PhoneNumber
+        Name: Name
+      properties:
+        Name:
+          type: string
+        PhoneNumber:
+          type: string
+      required:
+      - Name
+      - PhoneNumber
+      type: object
+    Service:
+      additionalProperties: false
+      example:
+        Enhancements:
+        - Code: Code
+        - Code: Code
+        Supplier: Supplier
+        Code: Code
+        Route: Route
+      properties:
+        Code:
+          minLength: 1
+          type: string
+        Enhancements:
+          items:
+            $ref: '#/components/schemas/Enhancement'
+          nullable: true
+          type: array
+        Supplier:
+          description: Optional preferred supplier code
+          nullable: true
+          type: string
+        Route:
+          description: Optional routing code
+          nullable: true
+          type: string
+      required:
+      - Code
+      type: object
+    ServiceOptions:
+      additionalProperties: false
+      example:
+        Insurance:
+          Currency: Currency
+          Value: 6.027456183070403
+      properties:
+        Insurance:
+          $ref: '#/components/schemas/Money'
+      type: object
+    Shipment:
+      additionalProperties: false
+      example:
+        Status:
+          Action: Action
+          Message: Message
+          RecordedOn: 2000-01-23T04:56:07.000+00:00
+          StatusCode: StatusCode
+          Location: Location
+        Narrative:
+        - Action: Action
+          Message: Message
+          RecordedOn: 2000-01-23T04:56:07.000+00:00
+          StatusCode: StatusCode
+          Location: Location
+        - Action: Action
+          Message: Message
+          RecordedOn: 2000-01-23T04:56:07.000+00:00
+          StatusCode: StatusCode
+          Location: Location
+        Barcode: Barcode
+        Hawb: Hawb
+        NorskBarcode: NorskBarcode
+        ProofOfDelivery:
+          SignedBy: SignedBy
+          SignedOn: 2000-01-23T04:56:07.000+00:00
+      properties:
+        NorskBarcode:
+          description: "Barcode/identifier allocated for the shipment\r\nby Norsk\
+            \ for tracking of the shipment.\r\nMay not be displayed on the label."
+          nullable: true
+          readOnly: true
+          type: string
+        Barcode:
+          description: the barcode shown on the shipment label.
+          nullable: true
+          readOnly: true
+          type: string
+        Hawb:
+          description: "The Hawb (House Airway Bill) is your own unique reference\
+            \ number for the shipment, for example it could be the order reference."
+          nullable: true
+          readOnly: true
+          type: string
+        Status:
+          $ref: '#/components/schemas/NarrativeVm'
+        Narrative:
+          description: History of shipment statuses
+          items:
+            $ref: '#/components/schemas/NarrativeVm'
+          nullable: true
+          readOnly: true
+          type: array
+        ProofOfDelivery:
+          $ref: '#/components/schemas/ProofOfDelivery'
+      type: object
+    ShipmentArchiveDocument:
+      additionalProperties: false
+      example:
+        Contents: Contents
+      properties:
+        Contents:
+          description: Base64 encoded copy of the document in PDF format
+          format: byte
+          nullable: true
+          type: string
+      type: object
+    ShipmentBookingItem:
+      additionalProperties: false
+      example:
+        ScanBarcode: ScanBarcode
+        Barcode: Barcode
+        NorskBarcode: NorskBarcode
+        Label: Label
+        Weight: 0.8008281904610115
+      properties:
+        NorskBarcode:
+          description: "Barcode/identifier allocated for the shipment item \r\nby\
+            \ Norsk may not be displayed on the label."
+          nullable: true
+          type: string
+        Barcode:
+          description: The barcode shown on the label for the shipment item.
+          nullable: true
+          type: string
+        Label:
+          description: "Separate label for the shipment item.\r\nBase64 encoded in\
+            \ pdf format."
+          format: byte
+          nullable: true
+          type: string
+        ScanBarcode:
+          description: "Barcode that is used when scanning an item.\r\nMay be different\
+            \ from numeric barcode displayed on the label."
+          nullable: true
+          type: string
+        Weight:
+          description: "Weight for the item specified by the booking\r\nMay be different\
+            \ from specified depending on dimensions"
+          format: double
+          type: number
+      type: object
+    ShipmentBookingRequest:
+      additionalProperties: false
+      example:
+        Site:
+          ContainerReference: ContainerReference
+          Location: Location
+        Description: Description
+        Invoice: Invoice
+        Specials:
+          TimedDelivery: null
+        LabelFormat: null
+        Picking:
+          Instructions: Instructions
+        Hawb: Hawb
+        NonDox: true
+        Service:
+          Enhancements:
+          - Code: Code
+          - Code: Code
+          Supplier: Supplier
+          Code: Code
+          Route: Route
+        Pallet: true
+        LabelSize: null
+        CustomDeclarations:
+          PreferentialOrigin: PreferentialOrigin
+          FreightCost:
+            Currency: Currency
+            Value: 6.027456183070403
+          Insurance:
+            Currency: Currency
+            Value: 6.027456183070403
+          TransportationCost:
+            Currency: Currency
+            Value: 6.027456183070403
+        ReadyByDate: 2000-01-23T04:56:07.000+00:00
+        DDP: true
+        Consignee:
+          EORI: EORI
+          Company: Company
+          Email: Email
+          Address2: Address2
+          VAT: VAT
+          Address3: Address3
+          Address1: Address1
+          City: City
+          TaxId: TaxId
+          DivisionCode: DivisionCode
+          MobileNumber: MobileNumber
+          Zipcode: Zipcode
+          PhoneNumber: PhoneNumber
+          Division: Division
+          Fax: Fax
+          CountryCode: CountryCode
+          ContactName: ContactName
+        Currency: Currency
+        Value: 3.616076749251911
+        Shipper:
+          EORI: EORI
+          Company: Company
+          Email: Email
+          IOSS: IOSS
+          Address2: Address2
+          VAT: VAT
+          Address3: Address3
+          Address1: Address1
+          City: City
+          TaxId: TaxId
+          DivisionCode: DivisionCode
+          MobileNumber: MobileNumber
+          Zipcode: Zipcode
+          PhoneNumber: PhoneNumber
+          Division: Division
+          Fax: Fax
+          CountryCode: CountryCode
+          ContactName: ContactName
+        Collection:
+          Company: Company
+          Email: Email
+          Address2: Address2
+          Address3: Address3
+          Address1: Address1
+          City: City
+          DivisionCode: DivisionCode
+          MobileNumber: MobileNumber
+          CloseTime:
+            Millisecond: 1
+            NanosecondOfSecond: 7
+            Minute: 7
+            Second: 1
+            Hour: 2
+            TickOfSecond: 1
+            NanosecondOfDay: 1
+            ClockHourOfHalfDay: 4
+            TickOfDay: 6
+          Zipcode: Zipcode
+          PhoneNumber: PhoneNumber
+          Division: Division
+          PickupType: null
+          Fax: Fax
+          CountryCode: CountryCode
+          ContactName: ContactName
+          PackageLocation: PackageLocation
+        Requestor:
+          PhoneNumber: PhoneNumber
+          Name: Name
+        Pieces:
+        - Products:
+          - ProductQuantity: 0
+            HSCode: HSCode
+            Currency: Currency
+            ProductDescription: ProductDescription
+            CountryOfManufacture: CountryOfManufacture
+            ProductUnitValue: 0.23021358869347652
+            ProductUnitWeight: 706.140124150311
+          - ProductQuantity: 0
+            HSCode: HSCode
+            Currency: Currency
+            ProductDescription: ProductDescription
+            CountryOfManufacture: CountryOfManufacture
+            ProductUnitValue: 0.23021358869347652
+            ProductUnitWeight: 706.140124150311
+          Height: 6.027456183070403
+          Width: 1.4658129805029452
+          Depth: 0.8008281904610115
+          Weight: 596.2133916683182
+          NumberOfPieces: 0
+        - Products:
+          - ProductQuantity: 0
+            HSCode: HSCode
+            Currency: Currency
+            ProductDescription: ProductDescription
+            CountryOfManufacture: CountryOfManufacture
+            ProductUnitValue: 0.23021358869347652
+            ProductUnitWeight: 706.140124150311
+          - ProductQuantity: 0
+            HSCode: HSCode
+            Currency: Currency
+            ProductDescription: ProductDescription
+            CountryOfManufacture: CountryOfManufacture
+            ProductUnitValue: 0.23021358869347652
+            ProductUnitWeight: 706.140124150311
+          Height: 6.027456183070403
+          Width: 1.4658129805029452
+          Depth: 0.8008281904610115
+          Weight: 596.2133916683182
+          NumberOfPieces: 0
+        ExportCustoms:
+          CurrencyCode: CurrencyCode
+          InvoiceConsignee: InvoiceConsignee
+          TermsOfPayment: TermsOfPayment
+          TermsOfTrade: TermsOfTrade
+          InvoiceNumber: InvoiceNumber
+          PayeeOfGST: PayeeOfGST
+          InvoiceType: null
+          TypeOfExport: null
+      properties:
+        Pieces:
+          items:
+            $ref: '#/components/schemas/Piece'
+          type: array
+        ReadyByDate:
+          description: DateTime provided must included the Time and be in GMT format.
+          format: date-time
+          minLength: 1
+          type: string
+        Hawb:
+          description: "The Hawb (House Airway Bill) is your own unique reference\
+            \ number for the shipment, for example it could be the order reference."
+          minLength: 1
+          type: string
+        Description:
+          maxLength: 90
+          nullable: true
+          type: string
+        Value:
+          description: Total value of the shipment (ex. VAT)
+          format: double
+          type: number
+        Currency:
+          description: "Currency of the shipment value as a three letter ISO code.\r\
+            \nIf left unspecified then GBP will be used."
+          nullable: true
+          type: string
+        NonDox:
+          description: Uses to indicate of the shipment is documents or non-documents.
+          type: boolean
+        DDP:
+          type: boolean
+        Pallet:
+          type: boolean
+        Invoice:
+          description: Optional - Base64 string can be provided to use PLT services
+            with DHL for select countries.
+          nullable: true
+          type: string
+        Requestor:
+          $ref: '#/components/schemas/Requester'
+        Consignee:
+          $ref: '#/components/schemas/Address'
+        Collection:
+          $ref: '#/components/schemas/CollectionAddress'
+        Shipper:
+          $ref: '#/components/schemas/ShipperAddress'
+        Service:
+          $ref: '#/components/schemas/Service'
+        Specials:
+          $ref: '#/components/schemas/Specials'
+        Picking:
+          $ref: '#/components/schemas/Picking'
+        LabelFormat:
+          $ref: '#/components/schemas/LabelFormat'
+        Site:
+          $ref: '#/components/schemas/SiteDetails'
+        ExportCustoms:
+          $ref: '#/components/schemas/ExportCustoms'
+        CustomDeclarations:
+          $ref: '#/components/schemas/Declarations'
+        LabelSize:
+          $ref: '#/components/schemas/LabelSize'
+      required:
+      - Consignee
+      - Hawb
+      - Pieces
+      - ReadyByDate
+      - Service
+      type: object
+    ShipmentBookingResponse:
+      additionalProperties: false
+      example:
+        CollectionDateTime: 2000-01-23T04:56:07.000+00:00
+        Barcode: Barcode
+        NorskBarcode: NorskBarcode
+        Label: Label
+        ArchiveDocuments:
+        - Contents: Contents
+        - Contents: Contents
+        Items:
+        - ScanBarcode: ScanBarcode
+          Barcode: Barcode
+          NorskBarcode: NorskBarcode
+          Label: Label
+          Weight: 0.8008281904610115
+        - ScanBarcode: ScanBarcode
+          Barcode: Barcode
+          NorskBarcode: NorskBarcode
+          Label: Label
+          Weight: 0.8008281904610115
+        CollectionReferenceNumber: CollectionReferenceNumber
+      properties:
+        Barcode:
+          description: the barcode shown on the shipment label.
+          nullable: true
+          type: string
+        Label:
+          description: "Consolidated multi page pdf of the label and archive documents.\r\
+            \nBase64 encoded copy of the default shipment labels in 6x4 in PDF format"
+          format: byte
+          nullable: true
+          type: string
+        NorskBarcode:
+          description: "Barcode/identifier allocated for the shipment\r\nby Norsk\
+            \ for tracking of the shipment.\r\nMay not be displayed on the label."
+          nullable: true
+          type: string
+        Items:
+          description: A collection containing details for each shipment item
+          items:
+            $ref: '#/components/schemas/ShipmentBookingItem'
+          nullable: true
+          type: array
+        ArchiveDocuments:
+          description: A collection of any non label documents to go with the shipment.
+          items:
+            $ref: '#/components/schemas/ShipmentArchiveDocument'
+          nullable: true
+          type: array
+        CollectionReferenceNumber:
+          description: "Supplier collection reference number for shipment with collection.\r\
+            \nWill be null for non collection shipment"
+          nullable: true
+          type: string
+        CollectionDateTime:
+          description: "Supplier collection date with time number for shipment with\
+            \ collection.\r\nWill be null for non collection shipment"
+          format: date-time
+          nullable: true
+          type: string
+      type: object
+    ShipmentDimensionsResponse:
+      additionalProperties: false
+      example:
+        Barcode: Barcode
+        NorskBarcode: NorskBarcode
+        Pieces:
+        - NorskBarcode: NorskBarcode
+          VolumeWeight: 5.637376656633329
+          ImageUrl: ImageUrl
+          Height: 6.027456183070403
+          Width: 1.4658129805029452
+          Depth: 0.8008281904610115
+          Weight: 5.962133916683182
+        - NorskBarcode: NorskBarcode
+          VolumeWeight: 5.637376656633329
+          ImageUrl: ImageUrl
+          Height: 6.027456183070403
+          Width: 1.4658129805029452
+          Depth: 0.8008281904610115
+          Weight: 5.962133916683182
+      properties:
+        Barcode:
+          description: the barcode shown on the shipment label.
+          nullable: true
+          type: string
+        NorskBarcode:
+          description: "Barcode/identifier allocated for the shipment\r\nby Norsk\
+            \ for tracking of the shipment.\r\nMay not be displayed on the label."
+          nullable: true
+          type: string
+        Pieces:
+          items:
+            $ref: '#/components/schemas/Dimensions'
+          nullable: true
+          type: array
+      type: object
+    ShipperAddress:
+      additionalProperties: false
+      example:
+        EORI: EORI
+        Company: Company
+        Email: Email
+        IOSS: IOSS
+        Address2: Address2
+        VAT: VAT
+        Address3: Address3
+        Address1: Address1
+        City: City
+        TaxId: TaxId
+        DivisionCode: DivisionCode
+        MobileNumber: MobileNumber
+        Zipcode: Zipcode
+        PhoneNumber: PhoneNumber
+        Division: Division
+        Fax: Fax
+        CountryCode: CountryCode
+        ContactName: ContactName
+      properties:
+        ContactName:
+          maxLength: 35
+          minLength: 2
+          type: string
+        Company:
+          maxLength: 35
+          nullable: true
+          type: string
+        Address1:
+          maxLength: 45
+          minLength: 2
+          type: string
+        Address2:
+          maxLength: 45
+          nullable: true
+          type: string
+        Address3:
+          maxLength: 45
+          nullable: true
+          type: string
+        City:
+          maxLength: 35
+          minLength: 2
+          type: string
+        Division:
+          maxLength: 35
+          nullable: true
+          type: string
+        Email:
+          maxLength: 50
+          nullable: true
+          type: string
+        DivisionCode:
+          nullable: true
+          type: string
+        PhoneNumber:
+          maxLength: 20
+          nullable: true
+          type: string
+        Fax:
+          nullable: true
+          type: string
+        Zipcode:
+          nullable: true
+          type: string
+        MobileNumber:
+          nullable: true
+          type: string
+        CountryCode:
+          description: Country specifed as a two letter ISO code
+          minLength: 1
+          type: string
+        VAT:
+          description: Optional
+          nullable: true
+          type: string
+        EORI:
+          description: Optional
+          nullable: true
+          type: string
+        TaxId:
+          description: Optional
+          nullable: true
+          type: string
+        IOSS:
+          description: "Government Issued IOSS Number, used for shipping to the EU\
+            \ with shipments under 150EUR."
+          nullable: true
+          type: string
+      required:
+      - Address1
+      - City
+      - ContactName
+      - CountryCode
+      type: object
+    SiteDetails:
+      additionalProperties: false
+      description: Location the shipment is being booked from
+      example:
+        ContainerReference: ContainerReference
+        Location: Location
+      properties:
+        Location:
+          description: (optional) Location code such as airport code
+          nullable: true
+          type: string
+        ContainerReference:
+          description: (optional) A reference to a container the shipment is intended
+            to arrive in
+          nullable: true
+          type: string
+      type: object
+    Specials:
+      additionalProperties: false
+      example:
+        TimedDelivery: null
+      properties:
+        TimedDelivery:
+          $ref: '#/components/schemas/TimedDelivery'
+      type: object
+    TimedDelivery:
+      enum:
+      - None
+      - Pre9
+      - Pre12
+      type: string
+    TypeOfExport:
+      enum:
+      - Permanent
+      - Temporary
+      - Gift
+      - Repair
+      - Sample
+      - Return
+      - InterCompanyData
+      - Others
+      type: string
+    ValidationErrors:
+      additionalProperties: false
+      example:
+        Fields:
+        - Errors:
+          - Errors
+          - Errors
+          Name: Name
+        - Errors:
+          - Errors
+          - Errors
+          Name: Name
+        Message: Message
+        StackTrace: StackTrace
+        HResult: 0
+        InnerException: ""
+        HelpLink: HelpLink
+        TargetSite: ""
+        Data:
+          key: ""
+        PublicMessage: PublicMessage
+        ErrorCode: ErrorCode
+        Source: Source
+      properties:
+        TargetSite: {}
+        StackTrace:
+          nullable: true
+          readOnly: true
+          type: string
+        Message:
+          nullable: true
+          readOnly: true
+          type: string
+        Data:
+          additionalProperties: {}
+          nullable: true
+          readOnly: true
+          type: object
+        InnerException: {}
+        HelpLink:
+          nullable: true
+          type: string
+        Source:
+          nullable: true
+          type: string
+        HResult:
+          format: int32
+          type: integer
+        ErrorCode:
+          nullable: true
+          readOnly: true
+          type: string
+        Fields:
+          items:
+            $ref: '#/components/schemas/RequestField'
+          nullable: true
+          type: array
+        PublicMessage:
+          nullable: true
+          readOnly: true
+          type: string
+      type: object
+

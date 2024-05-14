@@ -6,4 +6,4 @@ build_script:
 - dotnet build -c Release
 - dotnet test -c Release
 after_build:
-- dotnet pack .\src\Mita.Notifications.Client\Mita.Notifications.Client.csproj -o ../../output -c Release --no-build
+- dotnet pack .\src\DA.Systems.Cube.Norsk\DA.Systems.Cube.Norsk.csproj -o ../../output -c Release --no-build

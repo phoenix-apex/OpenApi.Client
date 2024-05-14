@@ -1,0 +1,11 @@
+{
+  "caseInsensitiveResponseHeaders": true,
+  "library": "httpclient",
+  "netCoreProjectFile": true,
+  "targetFramework": "netstandard2.0",
+  "packageName": "DA.Systems.Cube.Norsk",
+  "useDateTimeOffset": true,
+  "conditionalSerialization": false,
+  "nullableReferenceTypes": false,
+  "optionalEmitDefaultValues": true
+}
