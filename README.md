@@ -22,7 +22,8 @@ Install-Package Mita.Notifications.Client
 
 Method names are humanized:
 
-`POST` on path `/api/v1/messages` becomes `PostMessages(Async)`
+`GET` on path `/api/v1/key` becomes `ApiV1KeyGet(Async)`<br>
+`POST` on path `/api/v1/messages` becomes `PostApiV1Messages(Async)`
 
 ## Sample code
 
@@ -55,9 +56,9 @@ not generate long-lived Secret Keys. The shared Secret Key between the client ap
 Notifications API needs to be changed from time to time. By default, the Secret Key remains valid 
 for a period of seven days (maximum three months) and any API call performed using an expired key 
 will result in a `HTTP Error 205 Reset Content`, with a message saying that the Secret Key is 
-expired. To refresh the API Key, you can do this from either the Notifications Portal -> API Key 
+expired. <br>To refresh the API Key, you can do this from either the Notifications Portal -> API Key 
 Manager, where the key needs to be updated manually, or by invoking the `GET api/v1/key` API 
-endpoint. It is suggested that latter method is to be implemented.
+endpoint. <br>It is suggested that latter method is to be implemented.
 
 ```csharp
 var config = new Configuration {
@@ -69,3 +70,59 @@ var keysApi = new APIKeyApi(config);
 var keys = await keysApi.GetApiV1KeyAsync();
 Console.WriteLine(keys?.ToJson());
 ```
+
+## Documentation for API Endpoints
+
+| Endpoint | Documentation |
+|------------|---------------|
+| ApiKeyApi | [ApiKeyApi](./docs/ApiKeyApi.md) |
+| AttachmentApi | [AttachmentApi](./docs/AttachmentApi.md) |
+| InboundMessagesApi | [InboundMessagesApi](./docs/InboundMessagesApi.md) |
+| MessageBatchApi | [MessageBatchApi](./docs/MessageBatchApi.md) |
+| MessagePricingApi | [MessagePricingApi](./docs/MessagePricingApi.md) |
+| MessagesApi | [MessagesApi](./docs/MessagesApi.md) |
+| SubscribersApi | [SubscribersApi](./docs/SubscribersApi.md) |
+| SubscriptionsContactGroupsApi | [SubscriptionsContactGroupsApi](./docs/SubscriptionsContactGroupsApi.md) |
+| MessageSchedulingApi | [MessageSchedulingApi](./docs/MessageSchedulingApi.md) |
+
+## Documentation for Models
+
+| Model Name | Documentation |
+|------------|---------------|
+| ApiKey | [ApiKey](./docs/ApiKey.md) |
+| Attachment | [Attachment](./docs/Attachment.md) |
+| CalculateMessageCost | [CalculateMessageCost](./docs/CalculateMessageCost.md) |
+| Contact | [Contact](./docs/Contact.md) |
+| CreateGroupRequest | [CreateGroupRequest](./docs/CreateGroupRequest.md) |
+| CreateMessageGroupRequest | [CreateMessageGroupRequest](./docs/CreateMessageGroupRequest.md) |
+| CreateMessageRequest | [CreateMessageRequest](./docs/CreateMessageRequest.md) |
+| CreateSubscriptionRequest | [CreateSubscriptionRequest](./docs/CreateSubscriptionRequest.md) |
+| CreateSubscriberRequest | [CreateSubscriberRequest](./docs/CreateSubscriberRequest.md) |
+| DeliveryReport | [DeliveryReport](./docs/DeliveryReport.md) |
+| DeliveryReports | [DeliveryReports](./docs/DeliveryReports.md) |
+| Encoding | [Encoding](./docs/Encoding.md) |
+| Group | [Group](./docs/Group.md) |
+| Error | [Error](./docs/Error.md) |
+| InboundMessage | [InboundMessage](./docs/InboundMessage.md) |
+| InboundMessageBatch | [InboundMessageBatch](./docs/InboundMessageBatch.md) |
+| InboundMessages | [InboundMessages](./docs/InboundMessages.md) |
+| InboundMessageStatus | [InboundMessageStatus](./docs/InboundMessageStatus.md) |
+| Language | [Language](./docs/Language.md) |
+| MessageBatch | [MessageBatch](./docs/MessageBatch.md) |
+| MessageContent | [MessageContent](./docs/MessageContent.md) |
+| MessagePriority | [MessagePriority](./docs/MessagePriority.md) |
+| MessageReceipt | [MessageReceipt](./docs/MessageReceipt.md) |
+| MessageRequest | [MessageRequest](./docs/MessageRequest.md) |
+| MessageStatus | [MessageStatus](./docs/MessageStatus.md) |
+| MessageType | [MessageType](./docs/MessageType.md) |
+| Page | [Page](./docs/Page.md) |
+| ProblemDetails | [ProblemDetails](./docs/ProblemDetails.md) |
+| Salutation | [Salutation](./docs/Salutation.md) |
+| SortDirection | [SortDirection](./docs/SortDirection.md) |
+| Subscriber | [Subscriber](./docs/Subscriber.md) |
+| Subscribers | [Subscribers](./docs/Subscribers.md) |
+| UpdateMessageBatchRequest | [UpdateMessageBatchRequest](./docs/UpdateMessageBatchRequest.md) |
+| UpdateMessageRequest | [UpdateMessageRequest](./docs/UpdateMessageRequest.md) |
+| UpdateScheduledMessageRequest | [UpdateScheduledMessageRequest](./docs/UpdateScheduledMessageRequest.md) |
+| UpdateSubscriberGroupRequest | [UpdateSubscriberGroupRequest](./docs/UpdateSubscriberGroupRequest.md) |
+| Validation | [Validation](./docs/Validation.md) |
